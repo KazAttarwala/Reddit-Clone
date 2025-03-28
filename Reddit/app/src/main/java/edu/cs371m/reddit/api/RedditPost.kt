@@ -88,6 +88,7 @@ data class RedditPost (
     fun searchFor(searchTerm: String): Boolean {
         // XXX Write me, search both regular posts and subreddit listings,
         // which you determine by if(displayName.isNullOrEmpty()) {
+
     }
 
     // NB: This changes the behavior of lists of RedditPosts.  I want posts fetched

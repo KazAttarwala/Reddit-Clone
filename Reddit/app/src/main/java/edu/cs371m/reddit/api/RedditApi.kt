@@ -26,6 +26,20 @@ interface RedditApi {
     // suspend fun getPosts(@Path("subreddit") subreddit: String) : xxxxxx
     // The reddit api docs are here: https://www.reddit.com/dev/api/#GET_hot
 
+    // fetch list of posts with a limit
+    @GET("/r/{subreddit}/hot.json")
+    fun getPosts(
+        @Path("subreddit") subreddit: String,
+        @Query("after") after: String?,
+        @Query("limit") limit: Int
+    ): Call<ListingResponse>
+    // fetch list of subreddits
+    @GET("/subreddits.json")
+    fun getSubreddits(
+        @Query("after") after: String?,
+        @Query("limit") limit: Int
+    ): Call<ListingResponse>
+
 
     // NB: Everything below here is fine, no need to change it
 
