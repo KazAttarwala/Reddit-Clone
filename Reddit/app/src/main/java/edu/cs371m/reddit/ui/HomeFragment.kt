@@ -14,6 +14,7 @@ import edu.cs371m.reddit.databinding.FragmentRvBinding
 // XXX Write most of this file
 class HomeFragment: Fragment(R.layout.fragment_rv) {
     // XXX initialize viewModel
+    private val viewModel: MainViewModel by activityViewModels()
 
     // Set up the adapter and recycler view
     private fun initAdapter(binding: FragmentRvBinding) {
@@ -25,6 +26,8 @@ class HomeFragment: Fragment(R.layout.fragment_rv) {
                     else it.title))
             Log.d("doOnePost", "image ${it.imageURL}")
             // XXX Write me
+
+
         }
         // XXX Write me, observe posts
     }

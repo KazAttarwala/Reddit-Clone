@@ -11,12 +11,12 @@
         <action
                 android:id="@+id/action_homeFragment_to_subreddits"
                 app:destination="@id/subreddits" />
-        <action
-                android:id="@+id/action_homeFragment_to_favorites"
-                app:destination="@id/favorites" />
-        <action
-                android:id="@+id/action_homeFragment_to_onePostFragment"
-                app:destination="@id/onePostFragment" />
+<!--        <action-->
+<!--                android:id="@+id/action_homeFragment_to_favorites"-->
+<!--                app:destination="@id/favorites" />-->
+<!--        <action-->
+<!--                android:id="@+id/action_homeFragment_to_onePostFragment"-->
+<!--                app:destination="@id/onePostFragment" />-->
     </fragment>
     <fragment
             android:id="@+id/subreddits"

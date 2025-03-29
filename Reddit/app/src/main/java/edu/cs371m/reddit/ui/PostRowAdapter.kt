@@ -38,5 +38,48 @@ class PostRowAdapter(private val viewModel: MainViewModel,
 
         }
     }
+
+    inner class VH(val binding: RowPostBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(post: RedditPost) {
+            // Set text fields
+            binding.title.text = post.title
+
+            // Handle selfText visibility
+            if (post.selfText.isNullOrEmpty()) {
+                binding.selfText.visibility = View.GONE
+            } else {
+                binding.selfText.visibility = View.VISIBLE
+                binding.selfText.text = post.selfText
+            }
+
+            binding.score.text = post.score.toString()
+            binding.comments.text = post.commentCount.toString()
+
+            Glide.glideFetch(post.imageURL, post.thumbnailURL, binding.image)
+
+            // Set click listeners for navigation on title, selfText, image and root
+            val clickListener = View.OnClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    navigateToOnePost(getItem(position))
+                }
+            }
+
+            binding.title.setOnClickListener(clickListener)
+            binding.selfText.setOnClickListener(clickListener)
+            binding.image.setOnClickListener(clickListener)
+            binding.root.setOnClickListener(clickListener)
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+        val binding = RowPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return VH(binding)
+    }
+
+    override fun onBindViewHolder(holder: VH, position: Int) {
+        val post = getItem(position)
+        holder.bind(post)
+    }
 }
 

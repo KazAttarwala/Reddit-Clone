@@ -16,8 +16,8 @@ class Favorites: Fragment(R.layout.fragment_rv) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(javaClass.simpleName, "onViewCreated")
         val binding = FragmentRvBinding.bind(view)
-        viewModel.setTitle("Favorites")
-        viewModel.hideActionBarFavorites()
+//        viewModel.setTitle("Favorites")
+//        viewModel.hideActionBarFavorites()
         // XXX Write me
     }
 }

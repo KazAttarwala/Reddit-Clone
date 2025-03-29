@@ -13,10 +13,13 @@ import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import edu.cs371m.reddit.api.RedditApi
+import edu.cs371m.reddit.api.RedditPostRepository
 import edu.cs371m.reddit.databinding.ActionBarBinding
 import edu.cs371m.reddit.databinding.ActivityMainBinding
 import edu.cs371m.reddit.ui.HomeFragmentDirections
 import edu.cs371m.reddit.ui.MainViewModel
+import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
     // This allows us to do better testing

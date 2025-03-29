@@ -85,11 +85,11 @@ data class RedditPost (
 
     // Given a search string, look for it in the RedditPost.  If found,
     // highlight it and return true, otherwise return false.
-    fun searchFor(searchTerm: String): Boolean {
-        // XXX Write me, search both regular posts and subreddit listings,
-        // which you determine by if(displayName.isNullOrEmpty()) {
-
-    }
+//    fun searchFor(searchTerm: String): Boolean {
+//        // XXX Write me, search both regular posts and subreddit listings,
+//        // which you determine by if(displayName.isNullOrEmpty()) {
+//
+//    }
 
     // NB: This changes the behavior of lists of RedditPosts.  I want posts fetched
     // at two different times to compare as equal.  By default, they will be different

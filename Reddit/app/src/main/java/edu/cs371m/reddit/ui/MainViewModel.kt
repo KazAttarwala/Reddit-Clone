@@ -14,6 +14,7 @@ import edu.cs371m.reddit.api.RedditPostRepository
 import edu.cs371m.reddit.databinding.ActionBarBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 // XXX Much to write
 class MainViewModel : ViewModel() {
@@ -24,12 +25,30 @@ class MainViewModel : ViewModel() {
     }
     private var actionBarBinding : ActionBarBinding? = null
     // XXX Write me, api, repository, favorites
+    private val redditApi = RedditApi.create()
+    private val redditPostRepository = RedditPostRepository(redditApi)
     // netSubreddits fetches the list of subreddits
     // We only do this once, so technically it does not need to be
     // MutableLiveData, or even really LiveData.  But maybe in the future
     // we will refetch it.
     private var netSubreddits = MutableLiveData<List<RedditPost>>().apply{
         // XXX Write me, viewModelScope.launch getSubreddits()
+        viewModelScope.launch (
+            context = viewModelScope.coroutineContext + Dispatchers.IO)
+        {
+            try {
+                val subreddits = redditPostRepository.getSubreddits()
+                withContext(Dispatchers.Main) {
+                    value = subreddits
+                }
+                Log.d("netSubreddits", "Fetched ${subreddits.size} subreddits")
+            } catch (e: Exception) {
+                Log.e("netSubreddits", "Error fetching subreddits", e)
+                withContext(Dispatchers.Main) {
+                    value = emptyList()
+                }
+            }
+        }
     }
     // netPosts fetches the posts for the current subreddit, when that
     // changes
@@ -37,6 +56,18 @@ class MainViewModel : ViewModel() {
         addSource(subreddit) { subreddit: String ->
             Log.d("repoPosts", subreddit)
             // XXX Write me, viewModelScope.launch getPosts
+            viewModelScope.launch (
+                context = viewModelScope.coroutineContext + Dispatchers.IO)
+            {
+                try {
+                    val posts = redditPostRepository.getPosts(subreddit)
+                    value = posts
+                    Log.d("netPosts", "Fetched ${posts.size} posts for subreddit $subreddit")
+                } catch (e: Exception) {
+                    Log.e("netPosts", "Error fetching posts for subreddit $subreddit", e)
+                    value = emptyList()
+                }
+            }
         }
     }
     // XXX Write me MediatorLiveData searchSubreddit, searchFavorites
