@@ -61,11 +61,17 @@ class MainViewModel : ViewModel() {
             {
                 try {
                     val posts = redditPostRepository.getPosts(subreddit)
-                    value = posts
+                    // Switch back to the main thread to update LiveData
+                    withContext(Dispatchers.Main) {
+                        value = posts
+                    }
                     Log.d("netPosts", "Fetched ${posts.size} posts for subreddit $subreddit")
                 } catch (e: Exception) {
                     Log.e("netPosts", "Error fetching posts for subreddit $subreddit", e)
-                    value = emptyList()
+                    // If there is an error, we set the value to an empty list
+                    withContext(Dispatchers.Main) {
+                        value = emptyList()
+                    }
                 }
             }
         }
@@ -90,6 +96,13 @@ class MainViewModel : ViewModel() {
     fun observeSubreddit(): LiveData<String> {
         return subreddit
     }
+    fun observeSubreddits(): LiveData<List<RedditPost>> {
+        return netSubreddits
+    }
+    fun observePosts(): LiveData<List<RedditPost>> {
+        return netPosts
+    }
+
 
     // ONLY call this from OnePostFragment, otherwise you will have problems.
     fun observeSearchPost(post: RedditPost): LiveData<RedditPost> {
@@ -112,4 +125,24 @@ class MainViewModel : ViewModel() {
     }
 
     // XXX Write me, set, observe, deal with favorites
+    private var favorites = MutableLiveData<List<RedditPost>>().apply {
+        value = emptyList()
+    }
+    fun observeFavorites(): LiveData<List<RedditPost>> {
+        return favorites
+    }
+    fun addFavorite(post: RedditPost) {
+        val currentFavorites = favorites.value ?: emptyList()
+        if (!currentFavorites.contains(post)) {
+            favorites.value = currentFavorites + post
+            Log.d("addFavorite", "Added ${post.title} to favorites")
+        }
+    }
+    fun removeFavorite(post: RedditPost) {
+        val currentFavorites = favorites.value ?: emptyList()
+        if (currentFavorites.contains(post)) {
+            favorites.value = currentFavorites - post
+            Log.d("removeFavorite", "Removed ${post.title} from favorites")
+        }
+    }
 }

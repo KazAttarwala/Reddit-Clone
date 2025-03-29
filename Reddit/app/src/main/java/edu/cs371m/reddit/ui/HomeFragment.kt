@@ -26,14 +26,33 @@ class HomeFragment: Fragment(R.layout.fragment_rv) {
                     else it.title))
             Log.d("doOnePost", "image ${it.imageURL}")
             // XXX Write me
-
+//            val action = HomeFragmentDirections
+//                .actionHomeFragmentToPostFragment(it.key)
+//            findNavController().navigate(action)
 
         }
+
+        binding.recyclerView.layoutManager = LinearLayoutManager(context)
+        binding.recyclerView.adapter = postRowAdapter
+
         // XXX Write me, observe posts
+        viewModel.observePosts().observe(viewLifecycleOwner) { posts ->
+            Log.d("HomeFragment", "observePosts $posts")
+            postRowAdapter.submitList(posts)
+        }
     }
 
     private fun initSwipeLayout(swipe : SwipeRefreshLayout) {
         // XXX Write me
+        swipe.setOnRefreshListener {
+            // Refresh the data
+            viewModel.repoFetch()
+
+            // Stop the refreshing indicator after a short delay
+            swipe.postDelayed({
+                swipe.isRefreshing = false
+            }, 1000)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,5 +60,12 @@ class HomeFragment: Fragment(R.layout.fragment_rv) {
         val binding = FragmentRvBinding.bind(view)
         Log.d(javaClass.simpleName, "onViewCreated")
         // XXX Write me.  Set title based on current subreddit
+
+        initAdapter(binding)
+        initSwipeLayout(binding.swipeRefreshLayout)
+
+        viewModel.observeSubreddit().observe(viewLifecycleOwner) { subreddit ->
+            viewModel.setTitle("r/${subreddit}")
+        }
     }
 }
