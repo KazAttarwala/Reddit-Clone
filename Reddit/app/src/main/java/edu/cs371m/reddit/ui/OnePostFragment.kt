@@ -28,7 +28,7 @@ class OnePostFragment: Fragment(R.layout.fragment_one_post) {
     
     private fun displayPost(binding: FragmentOnePostBinding, post: RedditPost) {
         // Set the title in action bar
-//        viewModel.setTitle(post.title)
+        viewModel.setTitle("One Post")
         
         // Set post details
         binding.onePostSubreddit.text = "r/${post.subreddit}"

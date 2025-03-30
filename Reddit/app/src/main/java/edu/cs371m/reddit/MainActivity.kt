@@ -65,9 +65,29 @@ class MainActivity : AppCompatActivity() {
     }
     private fun actionBarTitleLaunchSubreddit() {
         // XXX Write me actionBarBinding, safeNavigate
+        actionBarBinding?.actionTitle?.setOnClickListener {
+            // This is where we would navigate to a subreddit
+            // For now, let's just log it
+            Log.d("MainActivity", "Title clicked, navigating to subreddit")
+            // Example: navigate to a specific subreddit
+            val direction = HomeFragmentDirections.actionHomeFragmentToSubreddits()
+            navController.safeNavigate(direction)
+            // Hide the keyboard if it is open
+            hideKeyboard()
+        }
     }
     private fun actionBarLaunchFavorites() {
         // XXX Write me actionBarBinding, safeNavigate
+        actionBarBinding?.actionFavorite?.setOnClickListener {
+            // This is where we would navigate to the favorites
+            // For now, let's just log it
+            Log.d("MainActivity", "Favorites clicked, navigating to favorites")
+            // Example: navigate to the favorites fragment
+            val direction = HomeFragmentDirections.actionHomeFragmentToFavorites()
+            navController.safeNavigate(direction)
+            // Hide the keyboard if it is open
+            hideKeyboard()
+        }
     }
 
     // XXX check out addTextChangedListener
@@ -90,6 +110,10 @@ class MainActivity : AppCompatActivity() {
     }
     private fun initTitleObservers() {
         // Observe title changes
+        viewModel.observeTitle().observe(this) { title ->
+            Log.d("MainActivity", "Title changed to: $title")
+            actionBarBinding?.actionTitle?.text = title
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
