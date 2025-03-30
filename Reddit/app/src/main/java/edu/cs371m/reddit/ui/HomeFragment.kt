@@ -25,11 +25,10 @@ class HomeFragment: Fragment(R.layout.fragment_rv) {
                         it.title.substring(0, 31) + "..."
                     else it.title))
             Log.d("doOnePost", "image ${it.imageURL}")
-            // XXX Write me
-//            val action = HomeFragmentDirections
-//                .actionHomeFragmentToPostFragment(it.key)
-//            findNavController().navigate(action)
-
+            // Navigate to OnePostFragment with post key
+            val action = HomeFragmentDirections
+                .actionHomeFragmentToOnePostFragment(it)
+            findNavController().navigate(action)
         }
 
         binding.recyclerView.layoutManager = LinearLayoutManager(context)

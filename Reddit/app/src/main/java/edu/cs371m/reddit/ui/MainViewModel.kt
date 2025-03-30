@@ -107,7 +107,19 @@ class MainViewModel : ViewModel() {
     // ONLY call this from OnePostFragment, otherwise you will have problems.
     fun observeSearchPost(post: RedditPost): LiveData<RedditPost> {
         val searchPost = MediatorLiveData<RedditPost>().apply {
-            // XXX Write me
+            addSource(netPosts) { posts ->
+                val foundPost = posts.find { it.key == post.key }
+                if (foundPost != null) {
+                    value = foundPost
+                }
+            }
+            
+            addSource(favorites) { favPosts ->
+                val foundPost = favPosts.find { it.key == post.key }
+                if (foundPost != null) {
+                    value = foundPost
+                }
+            }
         }
         return searchPost
     }
@@ -115,13 +127,13 @@ class MainViewModel : ViewModel() {
     /////////////////////////
     // Action bar
     fun initActionBarBinding(it: ActionBarBinding) {
-        // XXX Write me, one liner
+        actionBarBinding = it
     }
     fun hideActionBarFavorites() {
-        // XXX Write me, one liner
+        actionBarBinding?.actionFavorite?.visibility = View.GONE
     }
     fun showActionBarFavorites() {
-        // XXX Write me, one liner
+        actionBarBinding?.actionFavorite?.visibility = View.VISIBLE
     }
 
     // XXX Write me, set, observe, deal with favorites
