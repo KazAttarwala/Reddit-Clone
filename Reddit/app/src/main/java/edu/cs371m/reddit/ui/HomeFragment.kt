@@ -58,11 +58,10 @@ class HomeFragment: Fragment(R.layout.fragment_rv) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentRvBinding.bind(view)
         Log.d(javaClass.simpleName, "onViewCreated")
-        // XXX Write me.  Set title based on current subreddit
-
         initAdapter(binding)
         initSwipeLayout(binding.swipeRefreshLayout)
 
+        // XXX Write me.  Set title based on current subreddit
         viewModel.observeSubreddit().observe(viewLifecycleOwner) { subreddit ->
             viewModel.setTitle("r/${subreddit}")
         }
