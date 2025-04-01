@@ -21,6 +21,9 @@ class Subreddits : Fragment(R.layout.fragment_rv) {
         val binding = FragmentRvBinding.bind(view)
         Log.d(javaClass.simpleName, "Subreddits onViewCreated")
 
+        // Disable swipe refresh in this fragment
+        binding.swipeRefreshLayout.isEnabled = false
+        
         // Set title to "Subreddits"
         viewModel.setTitle("Subreddits")
         viewModel.hideActionBarFavorites()

@@ -20,6 +20,9 @@ class Favorites: Fragment(R.layout.fragment_rv) {
         viewModel.setTitle("Favorites")
         viewModel.hideActionBarFavorites()
         
+        // Disable swipe refresh in this fragment
+        binding.swipeRefreshLayout.isEnabled = false
+        
         // Set up RecyclerView with PostRowAdapter
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         val adapter = PostRowAdapter(viewModel) { post ->
