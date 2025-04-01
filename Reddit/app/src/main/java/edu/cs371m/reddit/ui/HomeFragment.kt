@@ -34,9 +34,9 @@ class HomeFragment: Fragment(R.layout.fragment_rv) {
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = postRowAdapter
 
-        // XXX Write me, observe posts
+        // Observe filtered search posts that will show all posts when search is empty
         viewModel.observePosts().observe(viewLifecycleOwner) { posts ->
-            Log.d("HomeFragment", "observePosts $posts")
+            Log.d("HomeFragment", "observeSearchPosts $posts")
             postRowAdapter.submitList(posts)
         }
     }

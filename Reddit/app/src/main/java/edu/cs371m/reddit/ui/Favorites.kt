@@ -29,9 +29,9 @@ class Favorites: Fragment(R.layout.fragment_rv) {
         }
         binding.recyclerView.adapter = adapter
 
-        // Observe favorites list and update adapter when it changes
-        viewModel.observeFavorites().observe(viewLifecycleOwner) { favorites ->
-            adapter.submitList(favorites)
+        // Observe filtered search favorites that will show all favorites when search is empty
+        viewModel.observeFavorites().observe(viewLifecycleOwner) { filteredFavorites ->
+            adapter.submitList(filteredFavorites)
         }
     }
 

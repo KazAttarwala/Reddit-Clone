@@ -29,9 +29,9 @@ class Subreddits : Fragment(R.layout.fragment_rv) {
         val adapter = SubredditListAdapter(viewModel, findNavController())
         binding.recyclerView.adapter = adapter
 
-        // Observe subreddits (do not refetch on exit)
-        viewModel.observeSubreddits().observe(viewLifecycleOwner, Observer { subreddits ->
+        // Observe filtered search subreddits that will show all subreddits when search is empty
+        viewModel.observeSubreddits().observe(viewLifecycleOwner) { subreddits ->
             adapter.submitList(subreddits)
-        })
+        }
     }
 }

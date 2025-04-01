@@ -27,6 +27,9 @@ class MainViewModel : ViewModel() {
     // XXX Write me, api, repository, favorites
     private val redditApi = RedditApi.create()
     private val redditPostRepository = RedditPostRepository(redditApi)
+    private var favorites = MutableLiveData<List<RedditPost>>().apply {
+        value = emptyList()
+    }
     // netSubreddits fetches the list of subreddits
     // We only do this once, so technically it does not need to be
     // MutableLiveData, or even really LiveData.  But maybe in the future
@@ -79,6 +82,75 @@ class MainViewModel : ViewModel() {
     // XXX Write me MediatorLiveData searchSubreddit, searchFavorites
     // searchPosts
 
+    // MediatorLiveData for searching/filtering posts
+    private var searchPosts = MediatorLiveData<List<RedditPost>>().apply {
+        addSource(netPosts) { posts ->
+            val currentSearchTerm = searchTerm.value ?: ""
+            val filteredPosts = if (currentSearchTerm.isEmpty()) {
+                posts
+            } else {
+                posts.filter { it.searchFor(currentSearchTerm) }
+            }
+            value = filteredPosts
+        }
+        
+        addSource(searchTerm) { term ->
+            val posts = netPosts.value ?: emptyList()
+            val filteredPosts = if (term.isEmpty()) {
+                posts
+            } else {
+                posts.filter { it.searchFor(term) }
+            }
+            value = filteredPosts
+        }
+    }
+    
+    // MediatorLiveData for searching/filtering subreddits
+    private var searchSubreddits = MediatorLiveData<List<RedditPost>>().apply {
+        addSource(netSubreddits) { subreddits ->
+            val currentSearchTerm = searchTerm.value ?: ""
+            val filteredSubreddits = if (currentSearchTerm.isEmpty()) {
+                subreddits
+            } else {
+                subreddits.filter { it.searchFor(currentSearchTerm) }
+            }
+            value = filteredSubreddits
+        }
+        
+        addSource(searchTerm) { term ->
+            val subreddits = netSubreddits.value ?: emptyList()
+            val filteredSubreddits = if (term.isEmpty()) {
+                subreddits
+            } else {
+                subreddits.filter { it.searchFor(term) }
+            }
+            value = filteredSubreddits
+        }
+    }
+    
+    // MediatorLiveData for searching/filtering favorites
+    private var searchFavorites = MediatorLiveData<List<RedditPost>>().apply {
+        addSource(favorites) { favs ->
+            val currentSearchTerm = searchTerm.value ?: ""
+            val filteredFavs = if (currentSearchTerm.isEmpty()) {
+                favs
+            } else {
+                favs.filter { it.searchFor(currentSearchTerm) }
+            }
+            value = filteredFavs
+        }
+        
+        addSource(searchTerm) { term ->
+            val favs = favorites.value ?: emptyList()
+            val filteredFavs = if (term.isEmpty()) {
+                favs
+            } else {
+                favs.filter { it.searchFor(term) }
+            }
+            value = filteredFavs
+        }
+    }
+
     // Looks pointless, but if LiveData is set up properly, it will fetch posts
     // from the network
     fun repoFetch() {
@@ -97,12 +169,15 @@ class MainViewModel : ViewModel() {
         return subreddit
     }
     fun observeSubreddits(): LiveData<List<RedditPost>> {
-        return netSubreddits
+        return searchSubreddits
     }
     fun observePosts(): LiveData<List<RedditPost>> {
-        return netPosts
+        return searchPosts
     }
-
+    
+    fun setSearchTerm(term: String) {
+        searchTerm.value = term
+    }
 
     // ONLY call this from OnePostFragment, otherwise you will have problems.
     fun observeSearchPost(post: RedditPost): LiveData<RedditPost> {
@@ -137,11 +212,8 @@ class MainViewModel : ViewModel() {
     }
 
     // XXX Write me, set, observe, deal with favorites
-    private var favorites = MutableLiveData<List<RedditPost>>().apply {
-        value = emptyList()
-    }
     fun observeFavorites(): LiveData<List<RedditPost>> {
-        return favorites
+        return searchFavorites
     }
     fun addFavorite(post: RedditPost) {
         val currentFavorites = favorites.value ?: emptyList()
