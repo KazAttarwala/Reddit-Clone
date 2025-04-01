@@ -70,8 +70,10 @@ class PostRowAdapter(private val viewModel: MainViewModel,
                 val favorites = viewModel.observeFavorites().value ?: emptyList()
                 if (favorites.any { it.key == post.key }) {
                     viewModel.removeFavorite(post)
+                    binding.rowFav.setImageResource(R.drawable.ic_favorite_border_black_24dp)
                 } else {
                     viewModel.addFavorite(post)
+                    binding.rowFav.setImageResource(R.drawable.ic_favorite_black_24dp)
                 }
             }
 
