@@ -25,7 +25,13 @@ class OnePostFragment: Fragment(R.layout.fragment_one_post) {
         // Set the title in action bar
         viewModel.setTitle("One Post")
 
+        // Get the initial post
         displayPost(binding, args.post)
+        
+        // Observe search filtered post for highlighting
+        viewModel.observeSearchPost(args.post).observe(viewLifecycleOwner) { post ->
+            displayPost(binding, post)
+        }
     }
     
     private fun displayPost(binding: FragmentOnePostBinding, post: RedditPost) {
