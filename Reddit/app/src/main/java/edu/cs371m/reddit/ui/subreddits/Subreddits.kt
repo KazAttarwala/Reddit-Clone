@@ -23,6 +23,7 @@ class Subreddits : Fragment(R.layout.fragment_rv) {
 
         // Set title to "Subreddits"
         viewModel.setTitle("Subreddits")
+        viewModel.hideActionBarFavorites()
         
         // Set up RecyclerView with SubredditListAdapter
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
@@ -33,5 +34,11 @@ class Subreddits : Fragment(R.layout.fragment_rv) {
         viewModel.observeSubreddits().observe(viewLifecycleOwner) { subreddits ->
             adapter.submitList(subreddits)
         }
+    }
+
+    override fun onDestroyView() {
+        // Restore action bar favorites icon when leaving this fragment
+        viewModel.showActionBarFavorites()
+        super.onDestroyView()
     }
 }
