@@ -169,6 +169,12 @@ class MainViewModel : ViewModel() {
                     value = foundPost
                 }
             }
+            
+            addSource(searchTerm) { term ->
+                val currentValue = value ?: post
+                currentValue.searchFor(term ?: "")
+                value = currentValue
+            }
         }
         return searchPost
     }
