@@ -93,6 +93,27 @@ class MainActivity : AppCompatActivity() {
     // XXX check out addTextChangedListener
     private fun actionBarSearch() {
         // XXX Write me
+        actionBarBinding?.actionSearch?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // Not used
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Not used
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                val searchText = s.toString()
+                viewModel.setSearchTerm(searchText)
+                
+                // Hide keyboard when search is empty
+                if (searchText.isEmpty()) {
+                    hideKeyboard()
+                }
+                
+                Log.d("MainActivity", "Search term changed to: $searchText")
+            }
+        })
     }
 
     private fun initDebug() {
