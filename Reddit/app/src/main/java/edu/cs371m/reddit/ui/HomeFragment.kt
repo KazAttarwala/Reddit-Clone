@@ -3,6 +3,7 @@ package edu.cs371m.reddit.ui
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -42,15 +43,17 @@ class HomeFragment: Fragment(R.layout.fragment_rv) {
     }
 
     private fun initSwipeLayout(swipe : SwipeRefreshLayout) {
-        // XXX Write me
         swipe.setOnRefreshListener {
             // Refresh the data
-            viewModel.repoFetch()
-
-            // Stop the refreshing indicator after a short delay
-            swipe.postDelayed({
-                swipe.isRefreshing = false
-            }, 1000)
+            try {
+                swipe.isRefreshing = true
+                viewModel.repoFetch()
+            } catch (e: Exception) {
+                Log.e("HomeFragment", "Error fetching data: ${e.message}")
+                Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT).show()
+            }
+            // Hide the refresh indicator
+            swipe.isRefreshing = false
         }
     }
 
