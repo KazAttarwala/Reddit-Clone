@@ -22,14 +22,13 @@ class OnePostFragment: Fragment(R.layout.fragment_one_post) {
         
         // Hide action bar favorites icon in single post view
         viewModel.hideActionBarFavorites()
+        // Set the title in action bar
+        viewModel.setTitle("One Post")
 
         displayPost(binding, args.post)
     }
     
     private fun displayPost(binding: FragmentOnePostBinding, post: RedditPost) {
-        // Set the title in action bar
-        viewModel.setTitle("One Post")
-        
         // Set post details
         binding.onePostSubreddit.text = "r/${post.subreddit}"
         binding.onePostTitle.text = post.title
