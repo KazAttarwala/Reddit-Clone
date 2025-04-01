@@ -58,11 +58,13 @@ class PostRowAdapter(private val viewModel: MainViewModel,
             Glide.glideFetch(post.imageURL, post.thumbnailURL, binding.image)
 
             // Set favorite icon based on whether post is in favorites
-            val favorites = viewModel.observeFavorites().value ?: emptyList()
-            if (favorites.any { it.key == post.key }) {
-                binding.rowFav.setImageResource(R.drawable.ic_favorite_black_24dp)
-            } else {
-                binding.rowFav.setImageResource(R.drawable.ic_favorite_border_black_24dp)
+            // Create a favorites observer to update the icon whenever favorites change
+            viewModel.observeFavorites().observe(binding.root.context as androidx.lifecycle.LifecycleOwner) { favorites ->
+                if (favorites.any { it.key == post.key }) {
+                    binding.rowFav.setImageResource(R.drawable.ic_favorite_black_24dp)
+                } else {
+                    binding.rowFav.setImageResource(R.drawable.ic_favorite_border_black_24dp)
+                }
             }
 
             // Handle favorite icon click
