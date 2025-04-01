@@ -28,8 +28,9 @@ class SubredditListAdapter(private val viewModel: MainViewModel,
 
             // Set click listeners for heading and picture
             val clickListener = {
-                // navigate to posts for this subreddit
-
+                viewModel.setTitle(item.displayName.toString())
+                viewModel.setSubreddit(item.displayName.toString())
+                navController.popBackStack()
             }
             binding.subRowHeading.setOnClickListener { clickListener() }
             binding.subRowPic.setOnClickListener { clickListener() }

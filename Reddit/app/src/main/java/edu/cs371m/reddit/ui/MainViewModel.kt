@@ -179,6 +179,10 @@ class MainViewModel : ViewModel() {
         searchTerm.value = term
     }
 
+    fun setSubreddit(name: String) {
+        subreddit.value = name
+    }
+
     // ONLY call this from OnePostFragment, otherwise you will have problems.
     fun observeSearchPost(post: RedditPost): LiveData<RedditPost> {
         val searchPost = MediatorLiveData<RedditPost>().apply {
