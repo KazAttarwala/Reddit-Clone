@@ -1,5 +1,6 @@
 package edu.cs371m.reddit.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -37,6 +38,7 @@ class OnePostFragment: Fragment(R.layout.fragment_one_post) {
     private fun displayPost(binding: FragmentOnePostBinding, post: RedditPost) {
         // Set post details
         binding.onePostSubreddit.text = "r/${post.subreddit}"
+        binding.onePostSubreddit.setTextColor(Color.BLUE)
         binding.onePostTitle.text = post.title
         
         // Handle self text - show only if available
