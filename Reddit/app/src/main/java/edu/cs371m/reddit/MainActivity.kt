@@ -13,10 +13,13 @@ import androidx.navigation.NavDirections
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import edu.cs371m.reddit.api.RedditApi
+import edu.cs371m.reddit.api.RedditPostRepository
 import edu.cs371m.reddit.databinding.ActionBarBinding
 import edu.cs371m.reddit.databinding.ActivityMainBinding
 import edu.cs371m.reddit.ui.HomeFragmentDirections
 import edu.cs371m.reddit.ui.MainViewModel
+import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
     // This allows us to do better testing
@@ -62,14 +65,55 @@ class MainActivity : AppCompatActivity() {
     }
     private fun actionBarTitleLaunchSubreddit() {
         // XXX Write me actionBarBinding, safeNavigate
+        actionBarBinding?.actionTitle?.setOnClickListener {
+            // This is where we would navigate to a subreddit
+            // For now, let's just log it
+            Log.d("MainActivity", "Title clicked, navigating to subreddit")
+            // Example: navigate to a specific subreddit
+            val direction = HomeFragmentDirections.actionHomeFragmentToSubreddits()
+            navController.safeNavigate(direction)
+            // Hide the keyboard if it is open
+            hideKeyboard()
+        }
     }
     private fun actionBarLaunchFavorites() {
         // XXX Write me actionBarBinding, safeNavigate
+        actionBarBinding?.actionFavorite?.setOnClickListener {
+            // This is where we would navigate to the favorites
+            // For now, let's just log it
+            Log.d("MainActivity", "Favorites clicked, navigating to favorites")
+            // Example: navigate to the favorites fragment
+            val direction = HomeFragmentDirections.actionHomeFragmentToFavorites()
+            navController.safeNavigate(direction)
+            // Hide the keyboard if it is open
+            hideKeyboard()
+        }
     }
 
     // XXX check out addTextChangedListener
     private fun actionBarSearch() {
         // XXX Write me
+        actionBarBinding?.actionSearch?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // Not used
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Not used
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                val searchText = s.toString()
+                viewModel.setSearchTerm(searchText)
+                
+                // Hide keyboard when search is empty
+                if (searchText.isEmpty()) {
+                    hideKeyboard()
+                }
+                
+                Log.d("MainActivity", "Search term changed to: $searchText")
+            }
+        })
     }
 
     private fun initDebug() {
@@ -87,6 +131,10 @@ class MainActivity : AppCompatActivity() {
     }
     private fun initTitleObservers() {
         // Observe title changes
+        viewModel.observeTitle().observe(this) { title ->
+            Log.d("MainActivity", "Title changed to: $title")
+            actionBarBinding?.actionTitle?.text = title
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

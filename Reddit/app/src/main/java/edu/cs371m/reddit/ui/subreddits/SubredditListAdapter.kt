@@ -11,20 +11,36 @@ import edu.cs371m.reddit.glide.Glide
 import edu.cs371m.reddit.ui.MainViewModel
 import edu.cs371m.reddit.ui.PostRowAdapter
 
-// NB: Could probably unify with PostRowAdapter if we had two
-// different VH and override getItemViewType
-// https://medium.com/@droidbyme/android-recyclerview-with-multiple-view-type-multiple-view-holder-af798458763b
 class SubredditListAdapter(private val viewModel: MainViewModel,
                            private val navController: NavController
 )
     : ListAdapter<RedditPost, SubredditListAdapter.VH>(PostRowAdapter.RedditDiff()) {
 
     // ViewHolder pattern
-    inner class VH(val rowSubredditBinding: RowSubredditBinding)
-        : RecyclerView.ViewHolder(rowSubredditBinding.root)
+    inner class VH(private val binding: RowSubredditBinding)
+        : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: RedditPost) {
+            // ...existing code (if any)...
+            binding.subRowHeading.text = item.displayName
+            binding.subRowDetails.text = item.publicDescription
+            // Load image using Glide if available
+            Glide.glideFetch(item.iconURL ?: "", item.iconURL ?: "", binding.subRowPic)
 
-        // XXX Write me
+            // Set click listeners for heading and picture
+            val clickListener = {
+                viewModel.setTitle(item.displayName.toString())
+                viewModel.setSubreddit(item.displayName.toString())
+                navController.popBackStack()
+            }
+            binding.subRowHeading.setOnClickListener { clickListener() }
+            binding.subRowPic.setOnClickListener { clickListener() }
+        }
+    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+        val binding = RowSubredditBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return VH(binding)
     }
     override fun onBindViewHolder(holder: VH, position: Int) {
-    // XXX Write me
+        holder.bind(getItem(position))
+    }
 }

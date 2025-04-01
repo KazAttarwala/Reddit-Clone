@@ -85,9 +85,26 @@ data class RedditPost (
 
     // Given a search string, look for it in the RedditPost.  If found,
     // highlight it and return true, otherwise return false.
+    // XXX Write me
     fun searchFor(searchTerm: String): Boolean {
-        // XXX Write me, search both regular posts and subreddit listings,
-        // which you determine by if(displayName.isNullOrEmpty()) {
+        // First clear any existing spans
+        removeAllCurrentSpans()
+        
+        // Empty search term matches everything, no highlighting needed
+        if (searchTerm.isEmpty()) return true
+        
+        // Check if this is a regular post or a subreddit listing
+        if (displayName.isNullOrEmpty()) {
+            // Regular post - search in title and selfText
+            val foundInTitle = findAndSetSpan(title, searchTerm)
+            val foundInSelfText = if (selfText != null) findAndSetSpan(selfText, searchTerm) else false
+            return foundInTitle || foundInSelfText
+        } else {
+            // Subreddit listing - search in displayName and publicDescription
+            val foundInDisplayName = findAndSetSpan(displayName, searchTerm)
+            val foundInDescription = if (publicDescription != null) findAndSetSpan(publicDescription, searchTerm) else false
+            return foundInDisplayName || foundInDescription
+        }
     }
 
     // NB: This changes the behavior of lists of RedditPosts.  I want posts fetched
