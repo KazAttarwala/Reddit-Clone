@@ -86,22 +86,12 @@ class MainViewModel : ViewModel() {
     private var searchPosts = MediatorLiveData<List<RedditPost>>().apply {
         addSource(netPosts) { posts ->
             val currentSearchTerm = searchTerm.value ?: ""
-            val filteredPosts = if (currentSearchTerm.isEmpty()) {
-                posts
-            } else {
-                posts.filter { it.searchFor(currentSearchTerm) }
-            }
-            value = filteredPosts
+            value = posts.filter { it.searchFor(currentSearchTerm) }
         }
         
         addSource(searchTerm) { term ->
             val posts = netPosts.value ?: emptyList()
-            val filteredPosts = if (term.isEmpty()) {
-                posts
-            } else {
-                posts.filter { it.searchFor(term) }
-            }
-            value = filteredPosts
+            value = posts.filter { it.searchFor(term ?: "") }
         }
     }
     
@@ -109,22 +99,12 @@ class MainViewModel : ViewModel() {
     private var searchSubreddits = MediatorLiveData<List<RedditPost>>().apply {
         addSource(netSubreddits) { subreddits ->
             val currentSearchTerm = searchTerm.value ?: ""
-            val filteredSubreddits = if (currentSearchTerm.isEmpty()) {
-                subreddits
-            } else {
-                subreddits.filter { it.searchFor(currentSearchTerm) }
-            }
-            value = filteredSubreddits
+            value = subreddits.filter { it.searchFor(currentSearchTerm) }
         }
         
         addSource(searchTerm) { term ->
             val subreddits = netSubreddits.value ?: emptyList()
-            val filteredSubreddits = if (term.isEmpty()) {
-                subreddits
-            } else {
-                subreddits.filter { it.searchFor(term) }
-            }
-            value = filteredSubreddits
+            value = subreddits.filter { it.searchFor(term ?: "") }
         }
     }
     
@@ -132,22 +112,12 @@ class MainViewModel : ViewModel() {
     private var searchFavorites = MediatorLiveData<List<RedditPost>>().apply {
         addSource(favorites) { favs ->
             val currentSearchTerm = searchTerm.value ?: ""
-            val filteredFavs = if (currentSearchTerm.isEmpty()) {
-                favs
-            } else {
-                favs.filter { it.searchFor(currentSearchTerm) }
-            }
-            value = filteredFavs
+            value = favs.filter { it.searchFor(currentSearchTerm) }
         }
         
         addSource(searchTerm) { term ->
             val favs = favorites.value ?: emptyList()
-            val filteredFavs = if (term.isEmpty()) {
-                favs
-            } else {
-                favs.filter { it.searchFor(term) }
-            }
-            value = filteredFavs
+            value = favs.filter { it.searchFor(term ?: "") }
         }
     }
 
