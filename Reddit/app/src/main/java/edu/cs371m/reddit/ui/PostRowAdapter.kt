@@ -57,6 +57,24 @@ class PostRowAdapter(private val viewModel: MainViewModel,
 
             Glide.glideFetch(post.imageURL, post.thumbnailURL, binding.image)
 
+            // Set favorite icon based on whether post is in favorites
+            val favorites = viewModel.observeFavorites().value ?: emptyList()
+            if (favorites.any { it.key == post.key }) {
+                binding.rowFav.setImageResource(R.drawable.ic_favorite_black_24dp)
+            } else {
+                binding.rowFav.setImageResource(R.drawable.ic_favorite_border_black_24dp)
+            }
+
+            // Handle favorite icon click
+            binding.rowFav.setOnClickListener {
+                val favorites = viewModel.observeFavorites().value ?: emptyList()
+                if (favorites.any { it.key == post.key }) {
+                    viewModel.removeFavorite(post)
+                } else {
+                    viewModel.addFavorite(post)
+                }
+            }
+
             // Set click listeners for navigation on title, selfText, image and root
             val clickListener = View.OnClickListener {
                 val position = bindingAdapterPosition
