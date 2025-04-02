@@ -1,10 +1,1 @@
-# Homework 4: Reddit
-
-Name:  
-EID:  
-Email:  
-How many hours you worked on this assignment:  
-Slip days:  
-Collaborators:  
-AI contributions:  
-Comments:   
+A Reddit clone app that allows you to see subreddits and posts. 
