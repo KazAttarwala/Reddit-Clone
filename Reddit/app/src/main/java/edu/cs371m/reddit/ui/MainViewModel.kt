@@ -16,7 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-// XXX Much to write
 class MainViewModel : ViewModel() {
     private var title = MutableLiveData<String>()
     private var searchTerm = MutableLiveData<String>()
@@ -24,18 +23,12 @@ class MainViewModel : ViewModel() {
         value = "aww"
     }
     private var actionBarBinding : ActionBarBinding? = null
-    // XXX Write me, api, repository, favorites
     private val redditApi = RedditApi.create()
     private val redditPostRepository = RedditPostRepository(redditApi)
     private var favorites = MutableLiveData<List<RedditPost>>().apply {
         value = emptyList()
     }
-    // netSubreddits fetches the list of subreddits
-    // We only do this once, so technically it does not need to be
-    // MutableLiveData, or even really LiveData.  But maybe in the future
-    // we will refetch it.
     private var netSubreddits = MutableLiveData<List<RedditPost>>().apply{
-        // XXX Write me, viewModelScope.launch getSubreddits()
         viewModelScope.launch (
             context = viewModelScope.coroutineContext + Dispatchers.IO)
         {
@@ -53,25 +46,20 @@ class MainViewModel : ViewModel() {
             }
         }
     }
-    // netPosts fetches the posts for the current subreddit, when that
-    // changes
     private var netPosts = MediatorLiveData<List<RedditPost>>().apply {
         addSource(subreddit) { subreddit: String ->
             Log.d("repoPosts", subreddit)
-            // XXX Write me, viewModelScope.launch getPosts
             viewModelScope.launch (
                 context = viewModelScope.coroutineContext + Dispatchers.IO)
             {
                 try {
                     val posts = redditPostRepository.getPosts(subreddit)
-                    // Switch back to the main thread to update LiveData
                     withContext(Dispatchers.Main) {
                         value = posts
                     }
                     Log.d("netPosts", "Fetched ${posts.size} posts for subreddit $subreddit")
                 } catch (e: Exception) {
                     Log.e("netPosts", "Error fetching posts for subreddit $subreddit", e)
-                    // If there is an error, we set the value to an empty list
                     withContext(Dispatchers.Main) {
                         value = emptyList()
                     }
@@ -79,10 +67,7 @@ class MainViewModel : ViewModel() {
             }
         }
     }
-    // XXX Write me MediatorLiveData searchSubreddit, searchFavorites
-    // searchPosts
 
-    // MediatorLiveData for searching/filtering posts
     private var searchPosts = MediatorLiveData<List<RedditPost>>().apply {
         addSource(netPosts) { posts ->
             val currentSearchTerm = searchTerm.value ?: ""
@@ -95,7 +80,6 @@ class MainViewModel : ViewModel() {
         }
     }
     
-    // MediatorLiveData for searching/filtering subreddits
     private var searchSubreddits = MediatorLiveData<List<RedditPost>>().apply {
         addSource(netSubreddits) { subreddits ->
             val currentSearchTerm = searchTerm.value ?: ""
@@ -108,7 +92,6 @@ class MainViewModel : ViewModel() {
         }
     }
     
-    // MediatorLiveData for searching/filtering favorites
     private var searchFavorites = MediatorLiveData<List<RedditPost>>().apply {
         addSource(favorites) { favs ->
             val currentSearchTerm = searchTerm.value ?: ""
@@ -121,8 +104,6 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    // Looks pointless, but if LiveData is set up properly, it will fetch posts
-    // from the network
     fun repoFetch() {
         val fetch = subreddit.value
         subreddit.value = fetch
@@ -144,7 +125,7 @@ class MainViewModel : ViewModel() {
     fun observePosts(): LiveData<List<RedditPost>> {
         return searchPosts
     }
-    
+
     fun setSearchTerm(term: String) {
         searchTerm.value = term
     }
@@ -153,7 +134,6 @@ class MainViewModel : ViewModel() {
         subreddit.value = name
     }
 
-    // ONLY call this from OnePostFragment, otherwise you will have problems.
     fun observeSearchPost(post: RedditPost): LiveData<RedditPost> {
         val searchPost = MediatorLiveData<RedditPost>().apply {
             addSource(netPosts) { posts ->
@@ -191,7 +171,6 @@ class MainViewModel : ViewModel() {
         actionBarBinding?.actionFavorite?.visibility = View.VISIBLE
     }
 
-    // XXX Write me, set, observe, deal with favorites
     fun observeFavorites(): LiveData<List<RedditPost>> {
         return searchFavorites
     }

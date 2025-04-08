@@ -20,7 +20,6 @@ class SubredditListAdapter(private val viewModel: MainViewModel,
     inner class VH(private val binding: RowSubredditBinding)
         : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: RedditPost) {
-            // ...existing code (if any)...
             binding.subRowHeading.text = item.displayName
             binding.subRowDetails.text = item.publicDescription
             // Load image using Glide if available

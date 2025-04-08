@@ -21,27 +21,21 @@ class OnePostFragment: Fragment(R.layout.fragment_one_post) {
         val binding = FragmentOnePostBinding.bind(view)
         Log.d(javaClass.simpleName, "onViewCreated for post: ${args.post}")
         
-        // Hide action bar favorites icon in single post view
         viewModel.hideActionBarFavorites()
-        // Set the title in action bar
         viewModel.setTitle("One Post")
 
-        // Get the initial post
         displayPost(binding, args.post)
         
-        // Observe search filtered post for highlighting
         viewModel.observeSearchPost(args.post).observe(viewLifecycleOwner) { post ->
             displayPost(binding, post)
         }
     }
     
     private fun displayPost(binding: FragmentOnePostBinding, post: RedditPost) {
-        // Set post details
         binding.onePostSubreddit.text = "r/${post.subreddit}"
         binding.onePostSubreddit.setTextColor(Color.BLUE)
         binding.onePostTitle.text = post.title
         
-        // Handle self text - show only if available
         if (post.selfText.isNullOrEmpty()) {
             binding.onePostSelfText.visibility = View.GONE
         } else {
@@ -53,7 +47,6 @@ class OnePostFragment: Fragment(R.layout.fragment_one_post) {
     }
     
     override fun onDestroyView() {
-        // Restore action bar favorites icon when leaving this fragment
         viewModel.showActionBarFavorites()
         super.onDestroyView()
     }

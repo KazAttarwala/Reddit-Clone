@@ -12,12 +12,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import edu.cs371m.reddit.R
 import edu.cs371m.reddit.databinding.FragmentRvBinding
 
-// XXX Write most of this file
 class HomeFragment: Fragment(R.layout.fragment_rv) {
-    // XXX initialize viewModel
     private val viewModel: MainViewModel by activityViewModels()
 
-    // Set up the adapter and recycler view
     private fun initAdapter(binding: FragmentRvBinding) {
         val postRowAdapter = PostRowAdapter(viewModel) {
             Log.d("OnePost",
@@ -26,7 +23,6 @@ class HomeFragment: Fragment(R.layout.fragment_rv) {
                         it.title.substring(0, 31) + "..."
                     else it.title))
             Log.d("doOnePost", "image ${it.imageURL}")
-            // Navigate to OnePostFragment with post key
             val action = HomeFragmentDirections
                 .actionHomeFragmentToOnePostFragment(it)
             findNavController().navigate(action)
@@ -35,7 +31,6 @@ class HomeFragment: Fragment(R.layout.fragment_rv) {
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         binding.recyclerView.adapter = postRowAdapter
 
-        // Observe filtered search posts that will show all posts when search is empty
         viewModel.observePosts().observe(viewLifecycleOwner) { posts ->
             Log.d("HomeFragment", "observeSearchPosts $posts")
             postRowAdapter.submitList(posts)
@@ -44,7 +39,6 @@ class HomeFragment: Fragment(R.layout.fragment_rv) {
 
     private fun initSwipeLayout(swipe : SwipeRefreshLayout) {
         swipe.setOnRefreshListener {
-            // Refresh the data
             try {
                 swipe.isRefreshing = true
                 viewModel.repoFetch()
@@ -52,7 +46,6 @@ class HomeFragment: Fragment(R.layout.fragment_rv) {
                 Log.e("HomeFragment", "Error fetching data: ${e.message}")
                 Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT).show()
             }
-            // Hide the refresh indicator
             swipe.isRefreshing = false
         }
     }
@@ -64,7 +57,6 @@ class HomeFragment: Fragment(R.layout.fragment_rv) {
         initAdapter(binding)
         initSwipeLayout(binding.swipeRefreshLayout)
 
-        // XXX Write me.  Set title based on current subreddit
         viewModel.observeSubreddit().observe(viewLifecycleOwner) { subreddit ->
             viewModel.setTitle("r/${subreddit}")
         }

@@ -6,13 +6,11 @@ import com.google.gson.GsonBuilder
 import edu.cs371m.reddit.MainActivity
 
 class RedditPostRepository(private val redditApi: RedditApi) {
-    // NB: This is for our testing.
     private val gson : Gson = GsonBuilder().registerTypeAdapter(
             SpannableString::class.java, RedditApi.SpannableDeserializer()
         ).create()
 
     private fun unpackPosts(response: RedditApi.ListingResponse): List<RedditPost> {
-        // XXX Write me.
         return response.data.children.map { it.data }
     }
 
@@ -23,7 +21,6 @@ class RedditPostRepository(private val redditApi: RedditApi) {
                 MainActivity.jsonAww100,
                 RedditApi.ListingResponse::class.java)
         } else {
-            // XXX Write me.
             response = redditApi.getPosts(
                 subreddit = subreddit,
                 after = null,
@@ -40,7 +37,6 @@ class RedditPostRepository(private val redditApi: RedditApi) {
                 MainActivity.subreddit1,
                 RedditApi.ListingResponse::class.java)
         } else {
-            // XXX Write me.
             response = redditApi.getSubreddits(
                 after = null,
                 limit = 100

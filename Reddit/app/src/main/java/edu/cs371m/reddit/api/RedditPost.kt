@@ -38,7 +38,6 @@ data class RedditPost (
     val publicDescription: SpannableString?
 ): Serializable {
     companion object {
-        // NB: This only highlights the first match in a string
         private fun findAndSetSpan(fulltext: SpannableString, subtext: String): Boolean {
             if (subtext.isEmpty()) return true
             val i = fulltext.indexOf(subtext, ignoreCase = true)
@@ -64,52 +63,36 @@ data class RedditPost (
     }
     private fun clearSpan(str: SpannableString?) {
         str?.clearSpans()
-        // This is here because I think going from one span to none
-        // does not register as a change to the ListAdapter, so the
-        // last searched for letter stays CYAN.  Not sure why
         str?.setSpan(
             ForegroundColorSpan(Color.GRAY), 0, 0,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
     }
-    // clearSpans does not invalidate the textview
-    // We have to assign a span to make sure text gets redrawn, so assign
-    // a span that does nothing
+    
     private fun removeAllCurrentSpans(){
-        // Erase all spans
         clearSpan(title)
         clearSpan(selfText)
         clearSpan(displayName)
         clearSpan(publicDescription)
     }
 
-    // Given a search string, look for it in the RedditPost.  If found,
-    // highlight it and return true, otherwise return false.
-    // XXX Write me
     fun searchFor(searchTerm: String): Boolean {
-        // First clear any existing spans
         removeAllCurrentSpans()
         
-        // Empty search term matches everything, no highlighting needed
         if (searchTerm.isEmpty()) return true
         
-        // Check if this is a regular post or a subreddit listing
         if (displayName.isNullOrEmpty()) {
-            // Regular post - search in title and selfText
             val foundInTitle = findAndSetSpan(title, searchTerm)
             val foundInSelfText = if (selfText != null) findAndSetSpan(selfText, searchTerm) else false
             return foundInTitle || foundInSelfText
         } else {
-            // Subreddit listing - search in displayName and publicDescription
             val foundInDisplayName = findAndSetSpan(displayName, searchTerm)
             val foundInDescription = if (publicDescription != null) findAndSetSpan(publicDescription, searchTerm) else false
             return foundInDisplayName || foundInDescription
         }
     }
 
-    // NB: This changes the behavior of lists of RedditPosts.  I want posts fetched
-    // at two different times to compare as equal.  By default, they will be different
-    // objects with different hash codes.
+
     override fun equals(other: Any?) : Boolean =
         if (other is RedditPost) {
             key == other.key

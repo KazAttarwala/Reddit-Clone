@@ -41,10 +41,8 @@ class PostRowAdapter(private val viewModel: MainViewModel,
 
     inner class VH(val binding: RowPostBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(post: RedditPost) {
-            // Set text fields
             binding.title.text = post.title
 
-            // Handle selfText visibility
             if (post.selfText.isNullOrEmpty()) {
                 binding.selfText.visibility = View.GONE
             } else {
@@ -57,8 +55,6 @@ class PostRowAdapter(private val viewModel: MainViewModel,
 
             Glide.glideFetch(post.imageURL, post.thumbnailURL, binding.image)
 
-            // Set favorite icon based on whether post is in favorites
-            // Create a favorites observer to update the icon whenever favorites change
             viewModel.observeFavorites().observe(binding.root.context as androidx.lifecycle.LifecycleOwner) { favorites ->
                 if (favorites.any { it.key == post.key }) {
                     binding.rowFav.setImageResource(R.drawable.ic_favorite_black_24dp)
@@ -67,7 +63,6 @@ class PostRowAdapter(private val viewModel: MainViewModel,
                 }
             }
 
-            // Handle favorite icon click
             binding.rowFav.setOnClickListener {
                 val favorites = viewModel.observeFavorites().value ?: emptyList()
                 if (favorites.any { it.key == post.key }) {
@@ -79,7 +74,6 @@ class PostRowAdapter(private val viewModel: MainViewModel,
                 }
             }
 
-            // Set click listeners for navigation on title, selfText, image and root
             val clickListener = View.OnClickListener {
                 val position = bindingAdapterPosition
                 if (position != RecyclerView.NO_POSITION) {

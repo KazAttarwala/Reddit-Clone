@@ -18,32 +18,20 @@ import java.lang.reflect.Type
 
 
 interface RedditApi {
-    // XXX Write me, two function prototypes with Retrofit annotations
-    // @GET contains a string appended to the base URL
-    // the string is called a path name
-    // You can add a parameter to the path name like this
-    // @GET("/r/{subreddit}/")
-    // suspend fun getPosts(@Path("subreddit") subreddit: String) : xxxxxx
-    // The reddit api docs are here: https://www.reddit.com/dev/api/#GET_hot
 
-    // fetch list of posts with a limit
     @GET("/r/{subreddit}/hot.json")
     fun getPosts(
         @Path("subreddit") subreddit: String,
         @Query("after") after: String?,
         @Query("limit") limit: Int
     ): Call<ListingResponse>
-    // fetch list of subreddits
+    
     @GET("/subreddits.json")
     fun getSubreddits(
         @Query("after") after: String?,
         @Query("limit") limit: Int
     ): Call<ListingResponse>
 
-
-    // NB: Everything below here is fine, no need to change it
-
-    // https://www.reddit.com/dev/api/#listings
     class ListingResponse(val data: ListingData)
 
     class ListingData(
@@ -53,11 +41,7 @@ interface RedditApi {
     )
     data class RedditChildrenResponse(val data: RedditPost)
 
-    // This class allows Retrofit to parse items in our model of type
-    // SpannableString.  Note, given the amount of "work" we do to
-    // enable this behavior, one can argue that Retrofit is a bit...."simple."
     class SpannableDeserializer : JsonDeserializer<SpannableString> {
-        // @Throws(JsonParseException::class)
         override fun deserialize(
             json: JsonElement,
             typeOfT: Type,
@@ -68,15 +52,12 @@ interface RedditApi {
     }
 
     companion object {
-        // Tell Gson to use our SpannableString deserializer
         private fun buildGsonConverterFactory(): GsonConverterFactory {
             val gsonBuilder = GsonBuilder().registerTypeAdapter(
                 SpannableString::class.java, SpannableDeserializer()
             )
             return GsonConverterFactory.create(gsonBuilder.create())
         }
-        // Keep the base URL simple
-        //private const val BASE_URL = "https://www.reddit.com/"
         var httpurl = HttpUrl.Builder()
             .scheme("https")
             .host("www.reddit.com")
@@ -85,7 +66,6 @@ interface RedditApi {
         private fun create(httpUrl: HttpUrl): RedditApi {
             val client = OkHttpClient.Builder()
                 .addInterceptor(HttpLoggingInterceptor().apply {
-                    // Enable basic HTTP logging to help with debugging.
                     this.level = HttpLoggingInterceptor.Level.BASIC
                 })
                 .build()
